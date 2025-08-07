@@ -13,6 +13,7 @@ type FileStatus struct {
 	Worktree string `json:"worktree"`
 }
 
+// FileStatus 文件状态, git --no-optional-locks status --porcelain
 func (r *Repository) FileStatus() ([]FileStatus, error) {
 	out, err := utils.RunCmdByPath(r.Path, "git", "--no-optional-locks", "status", "--porcelain")
 
@@ -51,6 +52,7 @@ func (r *Repository) FileStatus() ([]FileStatus, error) {
 	return changes, nil
 }
 
+// Commit 将工作区的文件提交, git add & git commit -m
 func (r *Repository) Commit(title, msg string, fileList []string) (string, error) {
 	for _, f := range fileList {
 		out, err := utils.RunCmdByPath(r.Path, "git", "add", f)
@@ -71,6 +73,7 @@ func (r *Repository) Commit(title, msg string, fileList []string) (string, error
 
 }
 
+// DiscardChanges 丢弃更新, git checkout HEAD
 func (r *Repository) DiscardChanges(filePath string) (string, error) {
 
 	out, err := utils.RunCmdByPath(r.Path, "git", "checkout", "HEAD", "--", filePath)

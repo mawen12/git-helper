@@ -23,6 +23,7 @@ type MergeResult struct {
 	Count int       `json:"count"`
 }
 
+// PreMergeResult 模拟合并,基于 git merge-base 找出共同祖先, 基于 git merge-tree 模拟三方合并
 func (r *Repository) PreMergeResult(currentHash, MergeHash string) (MergeResult, error) {
 
 	var invalidResult = MergeResult{
@@ -30,11 +31,14 @@ func (r *Repository) PreMergeResult(currentHash, MergeHash string) (MergeResult,
 		Count: 0,
 	}
 
+	// 找出两个分支的共同祖先, h 为共同祖先的 commitHash
 	h, err := utils.RunCmdByPath(r.Path, "git", "merge-base", currentHash, MergeHash)
 	if err != nil {
 		return invalidResult, err
 	}
 	baseHash := strings.TrimSpace(h)
+
+	// 模拟一次三方合并的结果,不修改工作区,不产生提交 baseHash 两个分支共同祖先, currentHash 分支1, MergeHash 要合并进来的分支
 	out, err := utils.RunCmdByPath(r.Path, "git", "merge-tree", baseHash, currentHash, MergeHash)
 	if err != nil {
 		return invalidResult, err
@@ -63,6 +67,7 @@ func (r *Repository) PreMergeResult(currentHash, MergeHash string) (MergeResult,
 	return MergeResult{Kind: Clean, Count: int(i)}, nil
 }
 
+// MergeRebase 变基,将其平移到另一个分支的后面,使提交历史变得更线性, 更整洁, git rebase
 func (r *Repository) MergeRebase(ourBranch, theirBranch string) (string, error) {
 
 	ok, err := r.SwitchBranch(ourBranch)
@@ -80,6 +85,7 @@ func (r *Repository) MergeRebase(ourBranch, theirBranch string) (string, error) 
 	return out, nil
 }
 
+// MergeCommit 合并,保留两个分支的历史,产生一个新的合并提交, git merge
 func (r *Repository) MergeCommit(ourBranch, theirBranch string) (string, error) {
 	ok, err := r.SwitchBranch(ourBranch)
 	if err != nil {
@@ -96,6 +102,7 @@ func (r *Repository) MergeCommit(ourBranch, theirBranch string) (string, error) 
 	return out, nil
 }
 
+// MergeSquash 压缩合并,仅保留一个提交,内容等于之前提交总和,不保留原始提交历史, git merge --squash
 func (r *Repository) MergeSquash(ourBranch, theirBranch string) (string, error) {
 	ok, err := r.SwitchBranch(ourBranch)
 	if err != nil {

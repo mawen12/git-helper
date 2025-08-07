@@ -16,6 +16,7 @@ type Tag struct {
 	Time    string `json:"time"`
 }
 
+// Tags 获取该仓库所有的tag, git tag --sort=createdate
 func (r *Repository) Tags() ([]Tag, error) {
 	var tags []Tag
 	f := fmt.Sprintf("--format=%s", `%(refname:strip=2)<||>%(refname)<||>%(objecttype)<||>%(subject)<||>%(objectname)<||>%(creatordate:relative)<|n|>`)
@@ -59,6 +60,7 @@ func (r *Repository) Tags() ([]Tag, error) {
 	//return tags, nil
 }
 
+// DelTag 删除指定tag, git tag -d / git push origin --delete tag
 func (r *Repository) DelTag(tagName string, delRemote bool) (string, error) {
 
 	if delRemote {
@@ -76,8 +78,8 @@ func (r *Repository) DelTag(tagName string, delRemote bool) (string, error) {
 	return out, nil
 }
 
-//git tag  v10.0 -m "version 1.0"
-
+// git tag  v10.0 -m "version 1.0"
+// CreateTag 创建标签, git tag
 func (r *Repository) CreateTag(tag string, msg string) (string, error) {
 	var out string
 	var err error
@@ -92,6 +94,7 @@ func (r *Repository) CreateTag(tag string, msg string) (string, error) {
 	return out, nil
 }
 
+// RemoteTags 获取远程标签 git ls-remote --tags --refs origin
 func (r *Repository) RemoteTags() ([]string, error) {
 	var tags []string
 	isRemoteRepo, err := r.IsRemoteRepo()
@@ -110,8 +113,8 @@ func (r *Repository) RemoteTags() ([]string, error) {
 	return tags, nil
 }
 
-//git push origin v1.0
-
+// git push origin v1.0
+// PushTag 推送标签, git push origin
 func (r *Repository) PushTag(name string) (string, error) {
 
 	out, err := utils.RunCmdByPath(r.Path, "git", "push", "origin", name)
@@ -122,6 +125,7 @@ func (r *Repository) PushTag(name string) (string, error) {
 	return out, nil
 }
 
+// CreateTagByCommitId 使用commit创建标签, git tag
 func (r *Repository) CreateTagByCommitId(tag string, commitId string) (string, error) {
 	//git tag v1.0 a867b4af
 	out, err := utils.RunCmdByPath(r.Path, "git", "tag", tag, commitId)

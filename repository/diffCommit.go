@@ -15,6 +15,7 @@ type DiffCommitInfo struct {
 	Statistics   string        `json:"statistics"`
 }
 
+// DiffCommit 比较不同分支的区别, git diff <commit1> <commit2> --stat
 func (r *Repository) DiffCommit(newCommitId, oldCommitId string) (DiffCommitInfo, error) {
 
 	var content DiffCommitInfo

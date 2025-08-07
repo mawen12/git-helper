@@ -42,7 +42,17 @@ func (a *App) menu() *menu.Menu {
 
 	appMenu.Append(menu.EditMenu())
 
+	// 增加 Repository 子目录
+	// - Repository
+	// 		- Add local repository
+	// 		- Repository manage
+	// - Branch manage
+	// - Tag manage
+	// - Other
+	// 		- Theme
+	//  	- About
 	repo := appMenu.AddSubmenu("Repository")
+
 	repo.AddText("Add local repository", keys.CmdOrCtrl("r"), func(_ *menu.CallbackData) {
 		path, err := runtime.OpenDirectoryDialog(a.ctx, runtime.OpenDialogOptions{
 			Title: "Select Local Git Repository",

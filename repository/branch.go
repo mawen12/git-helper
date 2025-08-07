@@ -14,6 +14,7 @@ type Branch struct {
 	Upstream string `json:"upstream"`
 }
 
+// PushBranch 推送分支到远程
 func (r *Repository) PushBranch(name string) (string, error) {
 	//git push -u origin main
 	out, err := utils.RunCmdByPath(r.Path, "git", "push", "-u", "origin", name)
@@ -24,6 +25,7 @@ func (r *Repository) PushBranch(name string) (string, error) {
 	return out, nil
 }
 
+// getBranch 获取分支 git branch
 func (r *Repository) getBranch(isAll bool) ([]Branch, error) {
 
 	var branch []Branch
@@ -55,6 +57,8 @@ func (r *Repository) GetLocalBranch() ([]Branch, error) { //menu
 func (r *Repository) GetAllBranch() ([]Branch, error) { //use branch manage
 	return r.getBranch(true)
 }
+
+// SwitchBranch 切换分支, git checkout
 func (r *Repository) SwitchBranch(branchName string) (bool, error) {
 	_, err := utils.RunCmdByPath(r.Path, "git", "checkout", branchName)
 	if err != nil {
@@ -62,6 +66,8 @@ func (r *Repository) SwitchBranch(branchName string) (bool, error) {
 	}
 	return true, nil
 }
+
+// AddBranch 新增分支, git branch
 func (r *Repository) AddBranch(branchName string) error {
 	_, err := utils.RunCmdByPath(r.Path, "git", "branch", branchName)
 	if err != nil {
@@ -69,6 +75,8 @@ func (r *Repository) AddBranch(branchName string) error {
 	}
 	return nil
 }
+
+// DelBranch 删除分支, git branch -d, git push origin -d
 func (r *Repository) DelBranch(branchName string, delRemote bool) (string, error) {
 
 	if delRemote {
@@ -86,6 +94,7 @@ func (r *Repository) DelBranch(branchName string, delRemote bool) (string, error
 	return out, nil
 }
 
+// GetBranchHash 获取分支哈希值 git rev-parse
 func (r *Repository) GetBranchHash(branchName string) (string, error) {
 
 	hash, err := utils.RunCmdByPath(r.Path, "git", "rev-parse", branchName)
@@ -96,6 +105,7 @@ func (r *Repository) GetBranchHash(branchName string) (string, error) {
 	return h, nil
 }
 
+// GetCurrentBranch 获取当前分支, get rev-parse --abbrev-ref HEAD
 func (r *Repository) GetCurrentBranch() (string, error) {
 	branch, err := utils.RunCmdByPath(r.Path, "git", "rev-parse", "--abbrev-ref", "HEAD")
 	if err != nil {

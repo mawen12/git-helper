@@ -23,6 +23,7 @@ type Commit struct {
 	IsRemoteSync bool      `json:"isRemoteSync"`
 }
 
+// Commits 提交信息, git log <branch> -n 60
 func (r *Repository) Commits(branch string) ([]Commit, error) {
 	if branch == "" {
 		return nil, errors.New("branch name error")
@@ -93,6 +94,7 @@ type Log struct {
 	Message      string   `json:"message"`
 }
 
+// CommitsLog 获取提交日志, git log --all --date-order -n 100
 func (r *Repository) CommitsLog() ([]Log, error) {
 	//git log --all --date-order --pretty="%h<|>%p<|>%d<|>%an<|>%s<|n|>"
 
@@ -139,6 +141,7 @@ func (r *Repository) CommitsLog() ([]Log, error) {
 	return logs, nil
 }
 
+// parseDesc 解析tag
 func parseDesc(d string) LogDesc {
 	s := strings.TrimSpace(d)
 	r := strings.TrimRight(s, ")")

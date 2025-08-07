@@ -19,6 +19,7 @@ type DiffContent struct {
 	Index   int      `json:"index"`
 }
 
+// DiffWorkStage 比较变更文件, git diff
 func (r *Repository) DiffWorkStage(filePath string) ([]DiffContent, error) {
 
 	var content []DiffContent
@@ -41,6 +42,7 @@ func (r *Repository) DiffWorkStage(filePath string) ([]DiffContent, error) {
 	return content, nil
 }
 
+// ShowWorkTreeFile 查看最近一次提交的内容
 func (r *Repository) ShowWorkTreeFile(filePath string, flag DiffFlag) ([]DiffContent, error) {
 
 	var content []DiffContent
@@ -62,6 +64,7 @@ func (r *Repository) ShowWorkTreeFile(filePath string, flag DiffFlag) ([]DiffCon
 	return content, nil
 }
 
+// getDiffFlag 解析标识
 func getDiffFlag(c string) DiffFlag {
 	if strings.HasPrefix(c, "+") {
 		return ADDED
